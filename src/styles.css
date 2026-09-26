@@ -52,3 +52,39 @@ footer{border-top:1px solid var(--line);margin-top:30px}.footer-inner{max-width:
 .ai-btn { margin-top:12px; }
 .ai-btn:disabled { opacity:.6; cursor:wait; }
 .ai-note { margin-top:10px; font-size:12px; opacity:.75; }
+/* =========================================
+   FINDIT — SAFFRON CLAIM BUTTON
+   ========================================= */
+
+button[class*="claim"],
+.claim-btn,
+.claim-button,
+.claim-item-button,
+button.btn.primary.wide {
+  background: #FF9933 !important;
+  background-color: #FF9933 !important;
+  border-color: #FF9933 !important;
+  color: #111111 !important;
+  box-shadow: 0 6px 18px rgba(255, 153, 51, 0.25) !important;
+}
+
+button[class*="claim"]:hover,
+.claim-btn:hover,
+.claim-button:hover,
+.claim-item-button:hover,
+button.btn.primary.wide:hover {
+  background: #FFB15C !important;
+  background-color: #FFB15C !important;
+  border-color: #FFB15C !important;
+  color: #111111 !important;
+  box-shadow: 0 10px 26px rgba(255, 153, 51, 0.35) !important;
+}
+
+button[class*="claim"] svg,
+.claim-btn svg,
+.claim-button svg,
+.claim-item-button svg,
+button.btn.primary.wide svg {
+  color: #111111 !important;
+  stroke: #111111 !important;
+}

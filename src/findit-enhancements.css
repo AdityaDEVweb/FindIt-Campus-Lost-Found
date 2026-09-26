@@ -1,0 +1,981 @@
+/* FindIt feature additions */
+.report-nav{display:inline-flex;align-items:center;gap:6px!important;font-weight:700!important}
+.enhanced-filter{grid-template-columns:repeat(5,minmax(120px,1fr)) auto!important;align-items:end}
+.clear-filter-btn{height:42px;border:1px solid #ddd;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;gap:7px;padding:0 12px;cursor:pointer;font-weight:700}
+.confirmation-card,.claim-status-card,.claim-form,.info-card{background:#fff;border:1px solid #e8e8e8;border-radius:18px;padding:22px;box-shadow:0 8px 30px rgba(0,0,0,.05)}
+.confirmation-card{max-width:760px;margin:20px auto}.confirmation-icon{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:#eef9f1;margin-bottom:12px}.confirm-image{width:100%;max-height:280px;object-fit:cover;border-radius:14px;margin:15px 0}.confirm-grid{display:grid;gap:0;border:1px solid #eee;border-radius:14px;overflow:hidden}.confirm-row{display:grid;grid-template-columns:170px 1fr;gap:18px;padding:13px 15px;border-bottom:1px solid #eee}.confirm-row:last-child{border-bottom:0}.confirm-row span{color:#777}.confirmation-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}.remove-image-btn{position:absolute;right:10px;top:10px;z-index:3;border:0;border-radius:8px;padding:7px 9px;background:#111;color:#fff;display:flex;gap:5px;align-items:center;cursor:pointer}.upload{position:relative}
+.claim-form{display:grid;gap:13px;width:100%;margin-bottom:10px}.claim-heading{display:flex;gap:10px;align-items:flex-start}.claim-heading p,.claim-status-card p{margin:3px 0 0;color:#707070}.claim-status-card{margin:18px 0}.claim-status-head{display:flex;justify-content:space-between;align-items:center}.claim-timeline{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:18px 0}.timeline-step{text-align:center;color:#aaa}.timeline-step span{width:30px;height:30px;border-radius:50%;border:1px solid #ddd;display:grid;place-items:center;margin:auto;background:#fff}.timeline-step small{display:block;margin-top:7px;font-size:11px;line-height:1.2}.timeline-step.done{color:#333}.timeline-step.done span{background:#eef9f1;border-color:#b7ddbf}.timeline-step.current span{box-shadow:0 0 0 3px rgba(0,0,0,.08)}.claim-evidence{border-top:1px solid #eee;padding-top:12px}.claim-evidence p{font-size:14px;margin:6px 0}.claim-controls{display:flex;gap:10px;align-items:center;margin-top:15px}.claim-controls select{max-width:280px}.claim-mini{display:block;margin-top:5px;color:#666}.claims-list{display:grid;gap:10px}.claim-list-card{width:100%;display:flex;align-items:center;gap:14px;padding:12px;background:#fff;border:1px solid #e7e7e7;border-radius:14px;text-align:left;cursor:pointer}.claim-list-card img{width:62px;height:62px;object-fit:cover;border-radius:10px}.claim-list-card span{display:grid;gap:3px;flex:1}.claim-list-card small{color:#777}.claim-list-card strong{font-size:13px}
+@media(max-width:900px){.enhanced-filter{grid-template-columns:1fr 1fr!important}.claim-timeline{grid-template-columns:repeat(4,1fr);row-gap:14px}.nav{overflow-x:auto}.report-nav{white-space:nowrap}.confirm-row{grid-template-columns:1fr}.confirmation-actions{flex-direction:column}.confirmation-actions .btn{width:100%}}
+
+
+/* Compact report/post form */
+.post-form{max-width:760px!important;margin:0 auto 32px!important;padding:20px!important;box-sizing:border-box}
+.post-form .upload{height:210px!important;min-height:210px!important;max-height:210px!important;overflow:hidden}
+.post-form .upload img{width:100%!important;height:100%!important;object-fit:cover!important}
+.post-form .form-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important}
+.post-form textarea{min-height:96px!important;max-height:150px!important;resize:vertical}
+.post-form .field{margin-bottom:0!important}
+.form-heading{max-width:760px!important;margin-left:auto!important;margin-right:auto!important}
+@media(max-width:700px){.post-form{padding:14px!important}.post-form .form-grid{grid-template-columns:1fr!important}.post-form .upload{height:180px!important;min-height:180px!important;max-height:180px!important}}
+
+/* ===============================
+   FINDIT — BLACK + ABSTRACT GREEN
+   =============================== */
+:root {
+  --findit-green: #39ff88;
+  --findit-green-2: #00d96b;
+  --findit-green-soft: rgba(57,255,136,.14);
+  --findit-black: #050706;
+  --findit-panel: rgba(10,15,12,.82);
+  --findit-border: rgba(57,255,136,.18);
+}
+
+html, body, #root {
+  background:
+    radial-gradient(circle at 8% 12%, rgba(57,255,136,.13), transparent 28%),
+    radial-gradient(circle at 88% 18%, rgba(0,217,107,.10), transparent 30%),
+    radial-gradient(circle at 50% 92%, rgba(57,255,136,.07), transparent 35%),
+    #050706 !important;
+  color: #f2fff7;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: .28;
+  background-image:
+    linear-gradient(rgba(57,255,136,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(57,255,136,.035) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(circle at center, black 20%, transparent 82%);
+}
+
+#root { position: relative; z-index: 1; }
+
+/* Abstract glowing blobs */
+.app::before,
+.page::before,
+main::before {
+  content: "";
+  position: fixed;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+  background: rgba(57,255,136,.08);
+  z-index: -1;
+}
+
+.app::before { top: 6%; right: -120px; }
+.page::before { bottom: -120px; left: -120px; }
+
+/* Header / navigation */
+header,
+.navbar,
+.topbar {
+  background: rgba(3,7,5,.78) !important;
+  border-color: var(--findit-border) !important;
+  box-shadow: 0 12px 45px rgba(0,0,0,.35), 0 0 30px rgba(57,255,136,.04);
+  backdrop-filter: blur(18px);
+}
+
+.logo,
+.brand,
+.logo-text {
+  color: #f4fff8 !important;
+}
+
+.logo span,
+.brand span,
+.logo-mark {
+  color: var(--findit-green) !important;
+  text-shadow: 0 0 18px rgba(57,255,136,.45);
+}
+
+button,
+.btn,
+button.primary,
+.primary-btn {
+  border-color: rgba(57,255,136,.28) !important;
+}
+
+button.primary,
+.btn-primary,
+.primary-btn {
+  background: linear-gradient(135deg, #39ff88, #00c968) !important;
+  color: #031008 !important;
+  box-shadow: 0 8px 28px rgba(57,255,136,.20);
+}
+
+button.primary:hover,
+.btn-primary:hover,
+.primary-btn:hover {
+  box-shadow: 0 10px 36px rgba(57,255,136,.32);
+  transform: translateY(-1px);
+}
+
+/* Hero */
+.hero,
+.hero-section {
+  background:
+    radial-gradient(circle at 72% 30%, rgba(57,255,136,.17), transparent 25%),
+    radial-gradient(circle at 20% 80%, rgba(0,217,107,.10), transparent 28%),
+    linear-gradient(135deg, #050806 0%, #07100a 48%, #030504 100%) !important;
+  border-color: var(--findit-border) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.025), 0 24px 80px rgba(0,0,0,.25);
+}
+
+.hero h1,
+.hero-title {
+  color: #f5fff8 !important;
+}
+
+.hero h1 strong,
+.hero h1 span,
+.gradient-text {
+  color: var(--findit-green) !important;
+  background: none !important;
+  -webkit-text-fill-color: var(--findit-green) !important;
+  text-shadow: 0 0 30px rgba(57,255,136,.22);
+}
+
+/* Search / filters */
+.search-box,
+.search,
+.filter-bar,
+.filters,
+.input-wrap {
+  background: rgba(7,12,9,.86) !important;
+  border-color: rgba(57,255,136,.18) !important;
+  box-shadow: 0 12px 38px rgba(0,0,0,.28);
+}
+
+input,
+textarea,
+select {
+  background: rgba(3,7,5,.82) !important;
+  color: #effff5 !important;
+  border-color: rgba(57,255,136,.16) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: rgba(57,255,136,.62) !important;
+  box-shadow: 0 0 0 3px rgba(57,255,136,.08), 0 0 24px rgba(57,255,136,.08) !important;
+  outline: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #789084 !important;
+}
+
+/* Cards */
+.card,
+.item-card,
+.post-card,
+.claim-card,
+.stat-card,
+.panel,
+.modal,
+.empty-state,
+.profile-card {
+  background:
+    linear-gradient(145deg, rgba(12,20,15,.92), rgba(5,9,7,.94)) !important;
+  border-color: rgba(57,255,136,.14) !important;
+  box-shadow: 0 18px 55px rgba(0,0,0,.32), inset 0 1px rgba(255,255,255,.025);
+}
+
+.card:hover,
+.item-card:hover,
+.post-card:hover {
+  border-color: rgba(57,255,136,.38) !important;
+  box-shadow: 0 20px 65px rgba(0,0,0,.38), 0 0 34px rgba(57,255,136,.07);
+  transform: translateY(-3px);
+}
+
+.card h2,
+.card h3,
+.item-card h3,
+.post-card h3,
+.panel h2,
+.panel h3 {
+  color: #f2fff6 !important;
+}
+
+.card p,
+.item-card p,
+.post-card p,
+.muted,
+.meta,
+small {
+  color: #91a99b !important;
+}
+
+/* Green accents */
+.badge,
+.tag,
+.category,
+.status,
+.type-badge {
+  background: rgba(57,255,136,.09) !important;
+  color: #72ffad !important;
+  border-color: rgba(57,255,136,.18) !important;
+}
+
+.icon,
+svg {
+  --icon-green: #39ff88;
+}
+
+/* Upload / AI area */
+.upload,
+.dropzone,
+.ai-panel,
+.ai-card {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(57,255,136,.09), transparent 45%),
+    rgba(5,10,7,.88) !important;
+  border-color: rgba(57,255,136,.20) !important;
+}
+
+.upload:hover,
+.dropzone:hover {
+  border-color: rgba(57,255,136,.55) !important;
+  box-shadow: 0 0 34px rgba(57,255,136,.08);
+}
+
+/* Confirmation / detail */
+.confirmation,
+.detail-card,
+.detail-panel {
+  background: linear-gradient(145deg, rgba(9,16,12,.94), rgba(3,7,5,.97)) !important;
+  border-color: rgba(57,255,136,.16) !important;
+}
+
+hr,
+.divider {
+  border-color: rgba(57,255,136,.10) !important;
+}
+
+/* Links */
+a {
+  color: #65ffa3;
+}
+
+a:hover {
+  color: #9affc2;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #030504; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(#124f2c, #39ff88, #124f2c);
+  border-radius: 999px;
+  border: 2px solid #030504;
+}
+
+/* Selection */
+::selection {
+  background: rgba(57,255,136,.28);
+  color: #fff;
+}
+
+@media (max-width: 700px) {
+  body::before { background-size: 30px 30px; }
+  .app::before,
+  .page::before { width: 220px; height: 220px; filter: blur(65px); }
+}
+/* =========================================
+   FINDIT — TEXT HOVER EFFECT
+   ========================================= */
+
+/* Remove the surrounding hover/border effect */
+.item-card:hover,
+.card:hover,
+.post-card:hover,
+.claim-card:hover,
+.stat-card:hover,
+.panel:hover,
+.profile-card:hover,
+.my-row:hover {
+  transform: none !important;
+  border-color: inherit !important;
+  box-shadow: none !important;
+}
+
+/* Text hover */
+.item-card h1:hover,
+.item-card h2:hover,
+.item-card h3:hover,
+.item-card h4:hover,
+.item-card p:hover,
+.item-card span:hover,
+.card h1:hover,
+.card h2:hover,
+.card h3:hover,
+.card h4:hover,
+.card p:hover,
+.card span:hover,
+.post-card h1:hover,
+.post-card h2:hover,
+.post-card h3:hover,
+.post-card h4:hover,
+.post-card p:hover,
+.post-card span:hover,
+.claim-card h1:hover,
+.claim-card h2:hover,
+.claim-card h3:hover,
+.claim-card h4:hover,
+.claim-card p:hover,
+.claim-card span:hover,
+a:hover {
+  color: #b58b52 !important;
+  text-shadow:
+    0 0 8px rgba(181, 139, 82, 0.35),
+    0 0 18px rgba(181, 139, 82, 0.18);
+  transition: color .2s ease, text-shadow .2s ease;
+}
+
+/* Navigation / menu text */
+.nav-item:hover,
+.nav-link:hover,
+.menu-item:hover {
+  color: #b58b52 !important;
+  text-shadow: 0 0 12px rgba(181, 139, 82, 0.35);
+}
+
+/* Button text only */
+button:hover,
+.btn:hover {
+  box-shadow: none !important;
+}
+
+button:hover span,
+.btn:hover span {
+  color: #b58b52;
+  text-shadow: 0 0 10px rgba(181, 139, 82, 0.35);
+}
+header {
+  border: none !important;
+  box-shadow: none !important;
+}
+/* ===== REMOVE HEADER BORDER COMPLETELY ===== */
+
+header,
+.site-header,
+.app-header,
+.topbar,
+.navbar,
+.nav-header,
+.header,
+.header-inner {
+  border: 0 !important;
+  border-top: 0 !important;
+  border-right: 0 !important;
+  border-bottom: 0 !important;
+  border-left: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Remove pseudo-element borders/lines */
+header::before,
+header::after,
+.site-header::before,
+.site-header::after,
+.app-header::before,
+.app-header::after,
+.topbar::before,
+.topbar::after,
+.navbar::before,
+.navbar::after {
+  display: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+/* ===== FORCE REMOVE HEADER BORDER ===== */
+
+.site-header,
+header.site-header,
+header {
+  border: none !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove any line created by pseudo elements */
+.site-header::before,
+.site-header::after,
+header::before,
+header::after {
+  content: none !important;
+  display: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+/* =========================================
+   FINDIT — PREMIUM LOGO COLORS
+   ========================================= */
+
+.logo,
+.brand,
+.logo-text {
+  color: #F7F1E5 !important;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.logo span,
+.brand span,
+.logo-accent {
+  color: #D4A853 !important;
+}
+
+/* Logo icon */
+.logo svg,
+.brand svg {
+  color: #35C9A5 !important;
+  stroke-width: 2.4;
+  filter: drop-shadow(0 0 8px rgba(53, 201, 165, .25));
+}
+
+/* Logo hover */
+.logo:hover,
+.brand:hover {
+  color: #D4A853 !important;
+}
+
+.logo:hover svg,
+.brand:hover svg {
+  color: #D4A853 !important;
+  filter: drop-shadow(0 0 12px rgba(212, 168, 83, .4));
+  transform: scale(1.05);
+  transition: .25s ease;
+}
+/* =========================================
+   FINDIT — LOGO COLOR
+   ========================================= */
+
+.logo,
+.brand,
+.logo-text {
+  color: #F8FAFC !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.7px;
+}
+
+/* "It" / accent part */
+.logo span,
+.brand span,
+.logo-accent {
+  color: #39F59A !important;
+}
+
+/* Logo icon */
+.logo svg,
+.brand svg {
+  color: #39F59A !important;
+  stroke: #39F59A !important;
+  stroke-width: 2.5;
+
+  filter:
+    drop-shadow(0 0 5px rgba(57,245,154,.25));
+
+  transition: all .25s ease;
+}
+
+/* Hover */
+.logo:hover,
+.brand:hover {
+  color: #FFFFFF !important;
+}
+
+.logo:hover span,
+.brand:hover span,
+.logo:hover .logo-accent,
+.brand:hover .logo-accent {
+  color: #6FFFB4 !important;
+}
+
+.logo:hover svg,
+.brand:hover svg {
+  color: #6FFFB4 !important;
+  stroke: #6FFFB4 !important;
+
+  filter:
+    drop-shadow(0 0 10px rgba(57,245,154,.55));
+
+  transform: scale(1.06);
+}
+/* =========================================
+   FINDIT — ITEM CARD BACKGROUND
+   ========================================= */
+
+.item-card {
+  background: linear-gradient(
+    145deg,
+    #13263A 0%,
+    #0E1E30 100%
+  ) !important;
+
+  border: 1px solid rgba(255,255,255,.08) !important;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.20) !important;
+
+  transition:
+    background .25s ease,
+    transform .25s ease,
+    box-shadow .25s ease;
+}
+
+/* Hover */
+.item-card:hover {
+  background: linear-gradient(
+    145deg,
+    #173149 0%,
+    #102538 100%
+  ) !important;
+
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 16px 38px rgba(0,0,0,.28) !important;
+}
+/* =========================================
+   FINDIT — CHANGE MINT GREEN TO ORANGE
+   ========================================= */
+
+:root {
+  --findit-green: #FF8A3D !important;
+  --findit-green-soft: #FFD0A8 !important;
+  --findit-green-dark: #E66F20 !important;
+}
+
+
+/* Logo */
+.logo span,
+.brand span,
+.logo-accent {
+  color: #FF8A3D !important;
+}
+
+.logo svg,
+.brand svg {
+  color: #FF8A3D !important;
+  stroke: #FF8A3D !important;
+  filter: drop-shadow(0 0 8px rgba(255,138,61,.30)) !important;
+}
+
+
+/* Navigation */
+.nav-item:hover,
+.nav-link:hover,
+nav a:hover {
+  color: #FF8A3D !important;
+  background: rgba(255,138,61,.07) !important;
+}
+
+
+/* Active navigation */
+.nav-item.active,
+.nav-link.active,
+nav a.active {
+  background: #FF8A3D !important;
+  color: #08111F !important;
+  box-shadow: 0 6px 20px rgba(255,138,61,.20) !important;
+}
+
+
+/* Hero accent */
+.hero h1 span,
+.hero .accent,
+.hero .highlight {
+  color: #FF8A3D !important;
+
+  text-shadow:
+    0 0 25px rgba(255,138,61,.20) !important;
+}
+
+
+/* Hero icons */
+.hero svg,
+.hero .icon {
+  color: #FF8A3D !important;
+
+  filter:
+    drop-shadow(0 0 14px rgba(255,138,61,.30)) !important;
+}
+
+
+/* Cards */
+.card h2:hover,
+.card h3:hover,
+.item-card h2:hover,
+.item-card h3:hover,
+.post-card h2:hover,
+.post-card h3:hover {
+  color: #FF8A3D !important;
+
+  text-shadow:
+    0 0 12px rgba(255,138,61,.25) !important;
+}
+
+
+/* Card hover */
+.card:hover,
+.item-card:hover,
+.post-card:hover,
+.claim-card:hover {
+  border-color: rgba(255,138,61,.18) !important;
+}
+
+
+/* Search / inputs */
+.search-box:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: rgba(255,138,61,.45) !important;
+
+  box-shadow:
+    0 0 0 3px rgba(255,138,61,.08) !important;
+}
+
+
+/* Filter buttons */
+.filter-btn:hover {
+  color: #FF8A3D !important;
+  border-color: rgba(255,138,61,.28) !important;
+}
+
+.filter-btn.active {
+  background: rgba(255,138,61,.10) !important;
+  color: #FF8A3D !important;
+  border-color: rgba(255,138,61,.30) !important;
+}
+
+
+/* Found badges */
+.found,
+.badge-found {
+  color: #FFD0A8 !important;
+  background: rgba(255,138,61,.10) !important;
+  border-color: rgba(255,138,61,.20) !important;
+}
+
+
+/* Upload */
+.upload {
+  border-color: rgba(255,138,61,.28) !important;
+}
+
+.upload:hover {
+  border-color: rgba(255,138,61,.55) !important;
+  background: rgba(255,138,61,.05) !important;
+}
+
+
+/* AI panel */
+.ai-recognition,
+.ai-panel {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,138,61,.08),
+      rgba(20,40,55,.65)
+    ) !important;
+
+  border-color: rgba(255,138,61,.18) !important;
+}
+
+.ai-recognition svg,
+.ai-panel svg {
+  color: #FF8A3D !important;
+}
+
+
+/* Links */
+a:hover {
+  color: #FF8A3D !important;
+}
+
+
+/* Scrollbar */
+::-webkit-scrollbar-thumb:hover {
+  background: #FF8A3D !important;
+}
+/* =========================================
+   FINDIT — SAFFRON LOGO HOVER
+   ========================================= */
+
+.logo,
+.brand,
+.logo-text {
+  color: #F8FAFC !important;
+}
+
+/* Normal logo accent */
+.logo span,
+.brand span,
+.logo-accent {
+  color: #FF9933 !important;
+}
+
+/* Logo icon */
+.logo svg,
+.brand svg {
+  color: #FF9933 !important;
+  stroke: #FF9933 !important;
+  filter: drop-shadow(0 0 7px rgba(255,153,51,.25)) !important;
+}
+
+/* HOVER — keep saffron, NEVER mint */
+.logo:hover,
+.brand:hover {
+  color: #F8FAFC !important;
+}
+
+.logo:hover span,
+.brand:hover span,
+.logo:hover .logo-accent,
+.brand:hover .logo-accent {
+  color: #FF9933 !important;
+}
+
+.logo:hover svg,
+.brand:hover svg {
+  color: #FF9933 !important;
+  stroke: #FF9933 !important;
+
+  filter:
+    drop-shadow(0 0 12px rgba(255,153,51,.50)) !important;
+
+  transform: scale(1.06);
+}
+
+/* Hover */
+header a:hover,
+nav a:hover,
+.navbar a:hover,
+.topbar a:hover {
+  color: #FF9933 !important;
+}
+/* =========================================
+   FINDIT — FORCE BLACK NAVBAR
+   ========================================= */
+
+.app > .header {
+  background: #000000 !important;
+  background-color: #000000 !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+
+.app > .header .header-inner {
+  background: #000000 !important;
+  background-color: #000000 !important;
+  background-image: none !important;
+}
+
+/* Navigation buttons */
+.app > .header .nav button {
+  background: transparent !important;
+  color: #ffffff !important;
+  border: 0 !important;
+}
+
+/* Active Home/Browse/etc. */
+.app > .header .nav button.active {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Hover */
+.app > .header .nav button:hover {
+  color: #FF9933 !important;
+}
+
+/* Report Item */
+.app > .header .nav .report-nav {
+  color: #FF9933 !important;
+}
+
+/* FindIt logo */
+.app > .header .brand {
+  background: transparent !important;
+  color: #ffffff !important;
+}
+
+/* User pill */
+.app > .header .profile-pill {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+/* =====================================================
+   FINDIT — FIX INVISIBLE TEXT ON DETAIL PAGE
+   ===================================================== */
+
+.detail-content {
+  color: #f8fafc !important;
+}
+
+/* Main title */
+.detail-content h1 {
+  color: #f8fafc !important;
+}
+
+/* Description */
+.detail-content .detail-description {
+  color: #cbd5e1 !important;
+  opacity: 1 !important;
+}
+
+/* Category */
+.detail-content .item-category {
+  color: #FF9933 !important;
+}
+
+/* Fact cards */
+.detail-facts > div {
+  color: #111827 !important;
+  background: #ffffff !important;
+}
+
+.detail-facts svg {
+  color: #64748b !important;
+  stroke: #64748b !important;
+}
+
+.detail-facts small {
+  color: #64748b !important;
+}
+
+.detail-facts b {
+  color: #111827 !important;
+}
+
+/* AI matching card */
+.ai-match {
+  color: #475569 !important;
+  background: #fff7f2 !important;
+}
+
+.ai-match b {
+  color: #e85d3f !important;
+}
+
+.ai-match p {
+  color: #64748b !important;
+}
+
+/* Safety text */
+.safety-note {
+  color: #94a3b8 !important;
+}
+
+.safety-note span {
+  color: #94a3b8 !important;
+}
+
+.safety-note svg {
+  color: #22c55e !important;
+  stroke: #22c55e !important;
+}
+
+/* Back button */
+.back-btn {
+  color: #94a3b8 !important;
+}
+
+.back-btn:hover {
+  color: #FF9933 !important;
+}
+
+/* Save button */
+.detail-actions .btn.outline {
+  color: #111827 !important;
+  background: #ffffff !important;
+}
+
+.detail-actions .btn.outline svg {
+  color: #111827 !important;
+  stroke: #111827 !important;
+}
+
+/* General detail-page text protection */
+.detail-content p,
+.detail-content span,
+.detail-content small,
+.detail-content b {
+  opacity: 1 !important;
+}
+/* =========================================
+   FINDIT — ITEM CARD TEXT VISIBILITY
+   ========================================= */
+
+/* Card background */
+.item-card .item-body {
+  background: #ffffff !important;
+}
+
+/* Category */
+.item-card .item-category {
+  color: #64748b !important;
+  font-weight: 700 !important;
+}
+
+/* Item title */
+.item-card .item-body h3 {
+  color: #111827 !important;
+  font-weight: 800 !important;
+}
+
+/* Description */
+.item-card .item-desc {
+  color: #475569 !important;
+  opacity: 1 !important;
+}
+
+/* Location + date */
+.item-card .item-meta,
+.item-card .item-meta span {
+  color: #475569 !important;
+}
+
+.item-card .item-meta svg {
+  color: #64748b !important;
+  stroke: #64748b !important;
+}
+
+/* Lost / Found badge */
+.item-card .type-badge {
+  color: #111827 !important;
+}
+
+/* Save button */
+.item-card .save-btn {
+  color: #111827 !important;
+  background: #ffffff !important;
+}
+
+.item-card .save-btn svg {
+  color: #111827 !important;
+  stroke: #111827 !important;
+}

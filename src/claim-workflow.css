@@ -1,0 +1,213 @@
+/* FindIt claim lifecycle */
+.claim-status-card {
+  margin: 24px 0;
+  padding: 22px;
+  border: 1px solid rgba(15, 23, 42, .10);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, .08);
+}
+
+.claim-status-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.claim-status-head h3 {
+  margin: 4px 0 8px;
+  color: #111827 !important;
+}
+
+.claim-status-head > svg {
+  color: #FF9933 !important;
+  stroke: #FF9933 !important;
+}
+
+.claim-state-badge {
+  display: inline-block;
+  max-width: 100%;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #fff3e6;
+  color: #c65f00;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.claim-timeline {
+  display: flex;
+  gap: 8px;
+  margin: 22px 0;
+  overflow-x: auto;
+  padding: 4px 2px 10px;
+}
+
+.timeline-step {
+  position: relative;
+  min-width: 105px;
+  flex: 1;
+  text-align: center;
+  color: #94a3b8;
+}
+
+.timeline-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: calc(50% + 18px);
+  width: calc(100% - 36px);
+  height: 2px;
+  background: #e5e7eb;
+}
+
+.timeline-step > span {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: 30px;
+  height: 30px;
+  margin: 0 auto 8px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.timeline-step small {
+  display: block;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.timeline-step.done > span {
+  background: #FF9933;
+  color: #111827;
+}
+
+.timeline-step.done small {
+  color: #c65f00;
+}
+
+.timeline-step.done:not(:last-child)::after {
+  background: #FF9933;
+}
+
+.timeline-step.current > span {
+  box-shadow: 0 0 0 5px rgba(255, 153, 51, .15);
+}
+
+.timeline-step.rejected-current > span {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.timeline-step.rejected-current small {
+  color: #dc2626;
+}
+
+.claim-evidence {
+  padding: 16px;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.claim-evidence p {
+  margin: 6px 0;
+  color: #475569;
+  font-size: 13px;
+}
+
+.claim-evidence b {
+  color: #111827;
+}
+
+.claim-controls {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.claim-controls > label {
+  display: block;
+  margin-bottom: 10px;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.claim-next-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.claim-status-action {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  background: #FF9933;
+  color: #111827;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.claim-status-action:hover {
+  background: #ffb15c;
+  transform: translateY(-1px);
+}
+
+.claim-status-action.rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.claim-status-action.rejected:hover {
+  background: #fecaca;
+}
+
+.claim-complete {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.claim-list-card strong {
+  color: #c65f00 !important;
+}
+
+@media (max-width: 700px) {
+  .claim-timeline {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
+  }
+
+  .timeline-step {
+    min-width: 0;
+  }
+
+  .timeline-step::after {
+    display: none !important;
+  }
+}
